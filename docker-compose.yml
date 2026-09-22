@@ -25,8 +25,13 @@ services:
         condition: service_healthy
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     restart: unless-stopped
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - "3000:3000"
     depends_on:
