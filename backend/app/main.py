@@ -3,7 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.csrf import CSRFOriginMiddleware
-from app.routers import auth
+from app.routers import (
+    auth,
+    blog,
+    contact_messages,
+    profile,
+    projects,
+    services,
+    testimonials,
+)
 
 app = FastAPI(title="arturodev.info API")
 
@@ -19,6 +27,12 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(projects.router)
+app.include_router(blog.router)
+app.include_router(testimonials.router)
+app.include_router(services.router)
+app.include_router(profile.router)
+app.include_router(contact_messages.router)
 
 
 @app.get("/health")

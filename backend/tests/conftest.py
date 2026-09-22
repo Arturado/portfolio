@@ -68,3 +68,19 @@ def admin_user(db_session):
 @pytest.fixture
 def client():
     return TestClient(app)
+
+
+@pytest.fixture
+def origin_headers():
+    return {"Origin": settings.allowed_origin}
+
+
+@pytest.fixture
+def admin_client(client, admin_user, origin_headers):
+    client.headers.update(origin_headers)
+    response = client.post(
+        "/auth/login",
+        json={"email": settings.admin_email, "password": settings.admin_password},
+    )
+    assert response.status_code == 200
+    return client
