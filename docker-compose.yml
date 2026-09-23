@@ -29,9 +29,14 @@ services:
       context: ./frontend
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
     restart: unless-stopped
     environment:
       JWT_SECRET: ${JWT_SECRET}
+      # Server-side (Server Components, sitemap): la app corre dentro del
+      # contenedor, donde NEXT_PUBLIC_API_URL (pensado para el navegador)
+      # no resuelve. Se usa el nombre del servicio en la red de compose.
+      INTERNAL_API_URL: http://backend:4000
     ports:
       - "3000:3000"
     depends_on:

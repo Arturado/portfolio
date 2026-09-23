@@ -68,6 +68,14 @@ export interface BlogPost {
   updated_at: string;
 }
 
+export interface BlogPostSummary {
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  cover_image_url: string | null;
+  published_at: string | null;
+}
+
 export interface Page<T> {
   items: T[];
   total: number;
