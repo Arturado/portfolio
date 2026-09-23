@@ -7,7 +7,8 @@ compartido para todo el sitio público (Blog ya existe pero corrió
 sin layout compartido — esta fase lo agrega y el Blog lo hereda).
 
 ## Layout compartido (app/(public)/layout.tsx o equivalente)
-- Header: logo/nombre (Hanowar / arturodev.info), nav (Home, Proyectos,
+- Header: logo/nombre (Hanowar / arturodev.info), nav (preguntar a Hanowar qué redes sociales incluir en el footer antes de construirlo — no asumir LinkedIn/GitHub por default)
+- nav (Home, Proyectos,
   Servicios, Sobre mí, Blog, Contacto — este último placeholder hasta
   Fase 9), responsive (menú mobile)
 - Footer: copyright, links a redes si aplica (dejar slots, confirmar
