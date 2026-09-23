@@ -24,3 +24,12 @@
 ## Infra (ya lista, referencia)
 - VPS: /var/www/arturodev, nginx con SSL (arturodev.info, www, api.arturodev.info)
 - Docker Compose: postgres + backend (:4000) + frontend (:3000)
+
+## Sistema de diseño (Fase 7)
+- Paleta: Ink #101825, Paper #ECEAE3, Blueprint Line #4C86AD,
+  Signal #E08A3C, texto sobre Paper #1B2430, Status/online #4C9A6A
+- Tipografía: serif de carácter (titulares) + IBM Plex Sans (cuerpo) +
+  monospace (solo datos reales: stack tags, versión, status)
+- Motion: una sola secuencia orquestada en el hero al cargar, hover con
+  sustancia (anotación tipo leader-line en proyectos, no shadow-lift
+  genérico), respeta prefers-reduced-motion
