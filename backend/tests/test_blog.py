@@ -77,3 +77,50 @@ def test_create_without_auth_401(client):
         headers={"Origin": "http://localhost:3000"},
     )
     assert response.status_code == 401
+
+
+def test_content_is_sanitized_on_create(admin_client):
+    post = admin_client.post(
+        "/blog",
+        json={
+            "title": "Con script",
+            "content": "<p>hola</p><script>alert(1)</script><img src=x onerror=alert(1)>",
+        },
+    ).json()
+    assert "<script>" not in post["content"]
+    assert "onerror" not in post["content"]
+    assert "<p>hola</p>" in post["content"]
+
+
+def test_content_is_sanitized_on_update(admin_client):
+    post = create_post(admin_client, "Editable con script")
+    updated = admin_client.put(
+        f"/blog/{post['slug']}",
+        json={"content": "<p>ok</p><script>alert(1)</script>"},
+    ).json()
+    assert "<script>" not in updated["content"]
+    assert "<p>ok</p>" in updated["content"]
+
+
+def test_cover_image_url_persists(admin_client):
+    post = admin_client.post(
+        "/blog",
+        json={
+            "title": "Con cover",
+            "content": "contenido",
+            "cover_image_url": "https://res.cloudinary.com/demo/image/upload/cover.jpg",
+        },
+    ).json()
+    assert post["cover_image_url"] == "https://res.cloudinary.com/demo/image/upload/cover.jpg"
+
+
+def test_admin_get_by_slug_includes_draft(admin_client):
+    post = create_post(admin_client, "Borrador admin", published=False)
+    response = admin_client.get(f"/admin/blog/{post['slug']}")
+    assert response.status_code == 200
+    assert response.json()["title"] == "Borrador admin"
+
+
+def test_admin_get_by_slug_without_auth_401(client):
+    response = client.get("/admin/blog/no-existe")
+    assert response.status_code == 401

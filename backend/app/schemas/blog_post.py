@@ -8,6 +8,7 @@ class BlogPostCreate(BaseModel):
     slug: str | None = None
     content: str
     excerpt: str | None = None
+    cover_image_url: str | None = None
     tags: list[str] = []
     published: bool = False
 
@@ -17,6 +18,7 @@ class BlogPostUpdate(BaseModel):
     slug: str | None = None
     content: str | None = None
     excerpt: str | None = None
+    cover_image_url: str | None = None
     tags: list[str] | None = None
     published: bool | None = None
 
@@ -27,6 +29,7 @@ class BlogPostOut(BaseModel):
     slug: str
     content: str
     excerpt: str | None
+    cover_image_url: str | None
     tags: list[str]
     published: bool
     published_at: datetime | None

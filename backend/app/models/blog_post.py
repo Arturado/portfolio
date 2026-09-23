@@ -14,6 +14,7 @@ class BlogPost(Base):
     slug: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     excerpt: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    cover_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     tags: Mapped[list[str]] = mapped_column(JSON, default=list)
     published: Mapped[bool] = mapped_column(Boolean, default=False)
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

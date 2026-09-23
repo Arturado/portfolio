@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.db import get_db
 from app.core.deps import get_current_admin
+from app.core.html_sanitize import sanitize_html
 from app.core.slugs import slugify, unique_slug
 from app.models.blog_post import BlogPost
 from app.schemas.blog_post import BlogPostCreate, BlogPostOut, BlogPostUpdate
@@ -64,6 +65,13 @@ def list_blog_posts_admin(
     return Page(items=items, total=total, page=page, pages=pages)
 
 
+@router.get("/admin/blog/{slug}", response_model=BlogPostOut)
+def get_blog_post_admin(
+    slug: str, db: Session = Depends(get_db), _=Depends(get_current_admin)
+):
+    return _get_by_slug_or_404(db, slug)
+
+
 @router.get("/blog/{slug}", response_model=BlogPostOut)
 def get_blog_post(slug: str, db: Session = Depends(get_db)):
     return _get_published_by_slug_or_404(db, slug)
@@ -75,12 +83,14 @@ def create_blog_post(
 ):
     base_slug = slugify(payload.slug or payload.title)
     slug = unique_slug(db, BlogPost, base_slug)
-    excerpt = payload.excerpt or payload.content[:EXCERPT_LENGTH]
+    content = sanitize_html(payload.content)
+    excerpt = payload.excerpt or content[:EXCERPT_LENGTH]
 
-    data = payload.model_dump(exclude={"slug", "excerpt"})
+    data = payload.model_dump(exclude={"slug", "excerpt", "content"})
     post = BlogPost(
         **data,
         slug=slug,
+        content=content,
         excerpt=excerpt,
         published_at=datetime.now(timezone.utc) if payload.published else None,
     )
@@ -99,6 +109,9 @@ def update_blog_post(
 ):
     post = _get_by_slug_or_404(db, slug)
     data = payload.model_dump(exclude_unset=True)
+
+    if "content" in data and data["content"] is not None:
+        data["content"] = sanitize_html(data["content"])
 
     if "slug" in data and data["slug"]:
         data["slug"] = unique_slug(db, BlogPost, slugify(data["slug"]), exclude_id=post.id)
