@@ -21,6 +21,16 @@ def test_list_projects_public(admin_client):
     assert len(response.json()) == 2
 
 
+def test_list_projects_filter_featured(admin_client):
+    admin_client.post("/projects", json={"title": "Destacado", "description": "d", "featured": True})
+    admin_client.post("/projects", json={"title": "Normal", "description": "d", "featured": False})
+
+    response = admin_client.get("/projects?featured=true")
+    assert response.status_code == 200
+    titles = [p["title"] for p in response.json()]
+    assert titles == ["Destacado"]
+
+
 def test_admin_list_projects(admin_client):
     admin_client.post("/projects", json={"title": "A", "description": "d"})
 

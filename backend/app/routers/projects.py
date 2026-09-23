@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.db import get_db
@@ -18,8 +18,11 @@ def _get_by_slug_or_404(db: Session, slug: str) -> Project:
 
 
 @router.get("/projects", response_model=list[ProjectOut])
-def list_projects(db: Session = Depends(get_db)):
-    return db.query(Project).order_by(Project.order).all()
+def list_projects(featured: bool | None = Query(None), db: Session = Depends(get_db)):
+    query = db.query(Project)
+    if featured is not None:
+        query = query.filter(Project.featured == featured)
+    return query.order_by(Project.order).all()
 
 
 @router.get("/admin/projects", response_model=list[ProjectOut])
