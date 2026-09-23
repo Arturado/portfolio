@@ -54,6 +54,20 @@ export interface ContactMessage {
   read: boolean;
 }
 
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string | null;
+  cover_image_url: string | null;
+  tags: string[];
+  published: boolean;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Page<T> {
   items: T[];
   total: number;
