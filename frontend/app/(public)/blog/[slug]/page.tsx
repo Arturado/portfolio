@@ -2,6 +2,7 @@ import DOMPurify from "isomorphic-dompurify";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Section } from "@/components/ui/section";
 import { apiFetch, ApiError } from "@/lib/api";
 import type { BlogPost } from "@/lib/types";
 
@@ -50,32 +51,37 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
   const html = DOMPurify.sanitize(post.content);
 
   return (
-    <article className="mx-auto max-w-2xl px-4 py-12">
-      <Link href="/blog" className="text-sm text-zinc-500 underline">
-        Volver al blog
-      </Link>
+    <Section width="narrow" className="pt-14">
+      <article>
+        <Link
+          href="/blog"
+          className="font-mono text-mono-sm text-blueprint underline decoration-blueprint/40 underline-offset-4 hover:text-ink"
+        >
+          ← Volver al blog
+        </Link>
 
-      {post.cover_image_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={post.cover_image_url}
-          alt=""
-          className="mt-4 h-64 w-full rounded-lg object-cover"
+        {post.cover_image_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={post.cover_image_url}
+            alt=""
+            className="mt-4 h-64 w-full border border-ink/15 object-cover"
+          />
+        )}
+
+        <h1 className="mt-6 font-display text-h1 text-ink">{post.title}</h1>
+
+        {post.published_at && (
+          <p className="mt-2 font-mono text-mono-sm uppercase tracking-wider text-graphite/50">
+            {new Date(post.published_at).toLocaleDateString()}
+          </p>
+        )}
+
+        <div
+          className="prose mt-8 max-w-none prose-headings:font-display prose-headings:text-ink prose-p:text-graphite prose-a:text-blueprint prose-strong:text-ink"
+          dangerouslySetInnerHTML={{ __html: html }}
         />
-      )}
-
-      <h1 className="mt-6 text-3xl font-semibold text-black dark:text-zinc-50">{post.title}</h1>
-
-      {post.published_at && (
-        <p className="mt-2 text-sm text-zinc-500">
-          {new Date(post.published_at).toLocaleDateString()}
-        </p>
-      )}
-
-      <div
-        className="prose prose-zinc mt-8 max-w-none dark:prose-invert"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    </article>
+      </article>
+    </Section>
   );
 }

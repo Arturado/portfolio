@@ -26,15 +26,22 @@ const sizes: Record<ButtonSize, string> = {
   md: "h-10 px-4 text-body",
 };
 
+/**
+ * Genera las clases visuales de Button para usarlas en un elemento no
+ * <button> (ej. next/link) cuando el CTA es una navegacion real, no una
+ * accion — Button en si no soporta href, para no ensuciar su API nativa.
+ */
+export function buttonClasses(
+  variant: ButtonVariant = "primary",
+  size: ButtonSize = "md",
+  className?: string,
+) {
+  return cn(base, variants[variant], sizes[size], className);
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { variant = "primary", size = "md", className, ...props },
   ref,
 ) {
-  return (
-    <button
-      ref={ref}
-      className={cn(base, variants[variant], sizes[size], className)}
-      {...props}
-    />
-  );
+  return <button ref={ref} className={buttonClasses(variant, size, className)} {...props} />;
 });

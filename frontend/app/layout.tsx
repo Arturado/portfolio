@@ -23,7 +23,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "arturodev.info",
+  title: {
+    default: "arturodev.info",
+    template: "%s · arturodev.info",
+  },
   description: "Portfolio de Hanowar — desarrollo full-stack.",
 };
 
