@@ -27,3 +27,7 @@ def sanitize_html(content: str) -> str:
         attributes=ALLOWED_ATTRIBUTES,
         link_rel="noopener noreferrer nofollow",
     )
+
+
+def strip_html(content: str) -> str:
+    return nh3.clean(content, tags=set())

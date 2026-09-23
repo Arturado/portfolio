@@ -5,10 +5,15 @@ from sqlalchemy.orm import Session
 
 from app.core.db import get_db
 from app.core.deps import get_current_admin
-from app.core.html_sanitize import sanitize_html
+from app.core.html_sanitize import sanitize_html, strip_html
 from app.core.slugs import slugify, unique_slug
 from app.models.blog_post import BlogPost
-from app.schemas.blog_post import BlogPostCreate, BlogPostOut, BlogPostUpdate
+from app.schemas.blog_post import (
+    BlogPostCreate,
+    BlogPostOut,
+    BlogPostSummaryOut,
+    BlogPostUpdate,
+)
 from app.schemas.pagination import Page, paginate
 
 router = APIRouter(tags=["blog"])
@@ -34,7 +39,7 @@ def _get_by_slug_or_404(db: Session, slug: str) -> BlogPost:
     return post
 
 
-@router.get("/blog", response_model=Page[BlogPostOut])
+@router.get("/blog", response_model=Page[BlogPostSummaryOut])
 def list_blog_posts(
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
@@ -84,7 +89,7 @@ def create_blog_post(
     base_slug = slugify(payload.slug or payload.title)
     slug = unique_slug(db, BlogPost, base_slug)
     content = sanitize_html(payload.content)
-    excerpt = payload.excerpt or content[:EXCERPT_LENGTH]
+    excerpt = payload.excerpt or strip_html(content)[:EXCERPT_LENGTH]
 
     data = payload.model_dump(exclude={"slug", "excerpt", "content"})
     post = BlogPost(

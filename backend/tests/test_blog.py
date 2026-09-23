@@ -124,3 +124,26 @@ def test_admin_get_by_slug_includes_draft(admin_client):
 def test_admin_get_by_slug_without_auth_401(client):
     response = client.get("/admin/blog/no-existe")
     assert response.status_code == 401
+
+
+def test_auto_excerpt_strips_html_tags(admin_client):
+    post = admin_client.post(
+        "/blog",
+        json={"title": "Con HTML", "content": "<p>hola <strong>mundo</strong></p>"},
+    ).json()
+    assert post["excerpt"] == "hola mundo"
+
+
+def test_public_list_omits_content(admin_client):
+    create_post(admin_client, "Publico liviano")
+    response = admin_client.get("/blog")
+    item = response.json()["items"][0]
+    assert "content" not in item
+    assert set(item.keys()) == {"title", "slug", "excerpt", "cover_image_url", "published_at"}
+
+
+def test_admin_list_includes_content(admin_client):
+    create_post(admin_client, "Admin completo")
+    response = admin_client.get("/admin/blog")
+    item = response.json()["items"][0]
+    assert "content" in item

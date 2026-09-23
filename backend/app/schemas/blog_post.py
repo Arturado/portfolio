@@ -23,6 +23,16 @@ class BlogPostUpdate(BaseModel):
     published: bool | None = None
 
 
+class BlogPostSummaryOut(BaseModel):
+    title: str
+    slug: str
+    excerpt: str | None
+    cover_image_url: str | None
+    published_at: datetime | None
+
+    model_config = {"from_attributes": True}
+
+
 class BlogPostOut(BaseModel):
     id: int
     title: str
