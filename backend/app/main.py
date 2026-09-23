@@ -11,6 +11,7 @@ from app.routers import (
     projects,
     services,
     testimonials,
+    uploads,
 )
 
 app = FastAPI(title="arturodev.info API")
@@ -33,6 +34,7 @@ app.include_router(testimonials.router)
 app.include_router(services.router)
 app.include_router(profile.router)
 app.include_router(contact_messages.router)
+app.include_router(uploads.router)
 
 
 @app.get("/health")
